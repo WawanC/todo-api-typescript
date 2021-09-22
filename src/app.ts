@@ -5,7 +5,7 @@ import todoRoutes from "./routes/todo";
 
 const app = express();
 
-console.log("test");
+app.use(express.json());
 app.use(corsHandler);
 app.use(todoRoutes);
 
