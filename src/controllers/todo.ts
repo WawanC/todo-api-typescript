@@ -27,7 +27,7 @@ export const createTodo: RequestHandler = async (req, res, next) => {
 
   const newTodo = new Todo({
     text: body.text,
-    createdBy: "Test User",
+    createdBy: req.userId,
   });
 
   try {
@@ -60,6 +60,10 @@ export const updateTodo: RequestHandler = async (req, res, next) => {
     const todo = await Todo.findById(params.todoId);
     if (!todo) {
       const error = createError("Todo Not Found", 404);
+      return next(error);
+    }
+    if (req.userId !== todo.createdBy) {
+      const error = createError("Not Have Access", 401);
       return next(error);
     }
 
@@ -97,6 +101,11 @@ export const deleteTodo: RequestHandler = async (req, res, next) => {
       const error = createError("Todo Not Found", 404);
       return next(error);
     }
+    if (req.userId !== todo.createdBy) {
+      const error = createError("Not Have Access", 401);
+      return next(error);
+    }
+
     const result = await Todo.findByIdAndDelete(params.todoId);
     res.status(200).json({
       message: "DELETE TODO SUCCESS",
