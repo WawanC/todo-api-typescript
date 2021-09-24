@@ -11,7 +11,6 @@ const todoSchema = new mongoose.Schema({
   },
   createdBy: {
     type: String,
-    default: false,
   },
 });
 
