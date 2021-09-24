@@ -1,13 +1,15 @@
 import { Router } from "express";
-import { body, param, check } from "express-validator";
+import { body, param } from "express-validator";
 
+import isAuth from "../middlewares/is-auth";
 import * as todoController from "../controllers/todo";
 
 const router = Router();
 
-router.get("/todos", todoController.getTodos);
+router.get("/todos", isAuth, todoController.getTodos);
 router.post(
   "/todo",
+  isAuth,
   [
     body("text")
       .trim()
@@ -18,6 +20,7 @@ router.post(
 );
 router.put(
   "/todo/:todoId",
+  isAuth,
   [
     param("todoId")
       .trim()
@@ -38,6 +41,7 @@ router.put(
 );
 router.delete(
   "/todo/:todoId",
+  isAuth,
   [
     param("todoId")
       .trim()
