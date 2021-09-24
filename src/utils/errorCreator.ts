@@ -2,15 +2,15 @@ import { NextFunction } from "express";
 import { ValidationError } from "express-validator";
 
 interface AsyncError {
-  message: string | null;
-  statusCode: number | null;
-  data: Array<ValidationError> | null;
+  message?: string | null;
+  statusCode?: number | null;
+  data?: Array<ValidationError> | null;
 }
 
 export const createError = (
-  message: string | null,
-  statusCode: number | null,
-  data: Array<ValidationError> | null
+  message?: string,
+  statusCode?: number,
+  data?: Array<ValidationError>
 ): AsyncError => {
   const error = {
     message: message,

@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
+import mongoose from "mongoose";
 
 import * as todoController from "../controllers/todo";
 
@@ -15,6 +16,18 @@ router.post(
       .withMessage("Todo text cannot be empty!"),
   ],
   todoController.createTodo
+);
+router.delete(
+  "/todo/:todoId",
+  [
+    param("todoId")
+      .trim()
+      .isLength({
+        min: 12,
+      })
+      .withMessage("Todo ID is invalid."),
+  ],
+  todoController.deleteTodo
 );
 
 export default router;

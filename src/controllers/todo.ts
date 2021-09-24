@@ -40,3 +40,30 @@ export const createTodo: RequestHandler = async (req, res, next) => {
     createAsyncError(error, next);
   }
 };
+
+export const deleteTodo: RequestHandler = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = createError("Validation Failed", 500, errors.array());
+    return next(error);
+  }
+
+  const params = req.params as {
+    todoId: string;
+  };
+
+  try {
+    const todo = await Todo.findById(params.todoId);
+    if (!todo) {
+      const error = createError("Todo Not Found");
+      return next(error);
+    }
+    const result = await Todo.findByIdAndDelete(params.todoId);
+    res.status(200).json({
+      message: "DELETE TODO SUCCESS",
+      result: result,
+    });
+  } catch (error) {
+    createAsyncError(error, next);
+  }
+};
