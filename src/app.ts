@@ -6,12 +6,14 @@ import mongoose from "mongoose";
 import corsHandler from "./utils/cors";
 import errorsHandler from "./utils/errorHandler";
 import todoRoutes from "./routes/todo";
+import authRoutes from "./routes/auth";
 
 const app = express();
 
 app.use(express.json());
 app.use(corsHandler);
 app.use(todoRoutes);
+app.use(authRoutes);
 app.use(errorsHandler);
 
 const runApp = async () => {
