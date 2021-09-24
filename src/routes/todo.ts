@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { body, param } from "express-validator";
-import mongoose from "mongoose";
+import { body, param, check } from "express-validator";
 
 import * as todoController from "../controllers/todo";
 
@@ -16,6 +15,26 @@ router.post(
       .withMessage("Todo text cannot be empty!"),
   ],
   todoController.createTodo
+);
+router.put(
+  "/todo/:todoId",
+  [
+    param("todoId")
+      .trim()
+      .isLength({
+        min: 12,
+      })
+      .withMessage("Todo ID is invalid."),
+    body().custom((input, { req }) => {
+      if (req.body.text == null && req.body.isDone == null) {
+        console.log(req.body.text);
+        console.log(req.body.isDone);
+        return Promise.reject("No Updated Data provided.");
+      }
+      return true;
+    }),
+  ],
+  todoController.updateTodo
 );
 router.delete(
   "/todo/:todoId",

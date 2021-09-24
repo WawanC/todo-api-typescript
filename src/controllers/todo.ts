@@ -41,6 +41,45 @@ export const createTodo: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const updateTodo: RequestHandler = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = createError("Validation Failed", 500, errors.array());
+    return next(error);
+  }
+
+  const body = req.body as {
+    text: string;
+    isDone: boolean;
+  };
+  const params = req.params as {
+    todoId: string;
+  };
+
+  try {
+    const todo = await Todo.findById(params.todoId);
+    if (!todo) {
+      const error = createError("Todo Not Found", 404);
+      return next(error);
+    }
+
+    if (body.text) {
+      todo.text = body.text;
+    }
+    if (body.isDone) {
+      todo.isDone = body.isDone;
+    }
+
+    const result = await todo.save();
+    res.status(200).json({
+      message: "UPDATE TODO SUCCESS",
+      result: result,
+    });
+  } catch (error) {
+    createAsyncError(error, next);
+  }
+};
+
 export const deleteTodo: RequestHandler = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -55,7 +94,7 @@ export const deleteTodo: RequestHandler = async (req, res, next) => {
   try {
     const todo = await Todo.findById(params.todoId);
     if (!todo) {
-      const error = createError("Todo Not Found");
+      const error = createError("Todo Not Found", 404);
       return next(error);
     }
     const result = await Todo.findByIdAndDelete(params.todoId);

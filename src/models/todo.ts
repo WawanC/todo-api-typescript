@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
-const todoSchema = new mongoose.Schema({
+interface Todo {
+  text: string;
+  isDone: boolean;
+  createdBy: string;
+}
+
+const todoSchema = new mongoose.Schema<Todo>({
   text: {
     type: String,
     required: true,
@@ -14,4 +20,4 @@ const todoSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Todo", todoSchema);
+export default mongoose.model<Todo>("Todo", todoSchema);
